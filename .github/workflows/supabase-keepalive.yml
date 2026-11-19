@@ -2,7 +2,7 @@
 # Việc này gọi nhẹ vào cơ sở dữ liệu mỗi 3 ngày để trang "Hai Đứa Mình" luôn sẵn sàng.
 # Cần thêm 2 secret trong GitHub → Settings → Secrets and variables → Actions:
 #   SUPABASE_URL       (vd https://abcd.supabase.co)
-#   SUPABASE_ANON_KEY  (khoá anon public)
+#   SUPABASE_ANON_KEY  (Publishable key, dạng sb_publishable_…)
 name: Giữ Supabase luôn thức
 
 on:
@@ -24,4 +24,4 @@ jobs:
           fi
           curl -sS -o /dev/null -w "HTTP %{http_code}\n" \
             "$SUPABASE_URL/rest/v1/items?select=id&limit=1" \
-            -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY"
+            -H "apikey: $SUPABASE_ANON_KEY"

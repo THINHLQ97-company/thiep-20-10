@@ -311,17 +311,17 @@ h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
 <canvas id="fx" aria-hidden="true"></canvas>
 <input type="file" id="filePick" accept="image/*" multiple hidden>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ======================================================================
    CẤU HÌNH
-   SUPABASE_URL / SUPABASE_ANON_KEY: lấy trong Supabase → Project Settings → API.
+   SUPABASE_URL / SUPABASE_ANON_KEY: Project URL và Publishable key (Supabase → Settings → API Keys).
    Để trống cả hai thì trang chạy ở chế độ xem thử: dữ liệu chỉ lưu trên máy đang mở.
    TOGETHER_SINCE: ngày hai đứa chính thức thành người yêu (YYYY-MM-DD). Để trống thì ẩn bộ đếm ngày.
    ====================================================================== */
 const CONFIG = {
-  SUPABASE_URL: '',
-  SUPABASE_ANON_KEY: '',
+  SUPABASE_URL: 'https://kaxxfzlgzcylfygjjkih.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_ulYPgpeXcd1V_J0Hx2_LiQ_G6bWLWpd',   // publishable key, được phép công khai
   TOGETHER_SINCE: '',
   CARD_URL: 'https://www.2010gift.cloud/thiep-20-10/',   // thiệp 20/10, kỷ niệm đầu tiên của hai đứa
   CARD_DATE: '2026-10-20',
