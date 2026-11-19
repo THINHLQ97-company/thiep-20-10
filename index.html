@@ -977,6 +977,8 @@ function welcome(){
 }
 
 /* ================================= KHỞI ĐỘNG ================================= */
+// Tải lại trang thì luôn về trang chủ
+if(location.hash && location.hash !== '#/') history.replaceState(null, '', location.pathname + location.search);
 $('#fab').addEventListener('click', () => uploadSheet(route().name === 'item' ? route().id : ''));
 addEventListener('hashchange', () => { if(S.user) { render(); scrollTo(0, 0); } });
 async function boot(){
