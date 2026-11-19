@@ -1,0 +1,49 @@
+# Tự đưa trang lên Vercel mỗi khi có code mới trên nhánh main.
+# Không cần ứng dụng GitHub của Vercel. Cần 3 secret trong GitHub → Settings → Secrets and variables → Actions:
+#   VERCEL_TOKEN       tạo tại https://vercel.com/account/tokens
+#   VERCEL_ORG_ID      Team ID (Team Settings → General) hoặc Vercel ID (Account Settings → General) nếu là tài khoản cá nhân
+#   VERCEL_PROJECT_ID  Project ID của dự án đang gắn 2010gift.cloud (Project → Settings → General)
+name: Đưa trang lên Vercel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: vercel-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Kiểm tra secret
+        id: check
+        run: |
+          if [ -z "$VERCEL_TOKEN" ] || [ -z "$VERCEL_ORG_ID" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
+            echo "Chưa đủ 3 secret VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID nên bỏ qua."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.ready == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.ready == 'true'
+        with:
+          node-version: 20
+
+      - name: Lấy cấu hình dự án Vercel
+        if: steps.check.outputs.ready == 'true'
+        run: npx --yes vercel@39 pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Đưa lên bản chính thức
+        if: steps.check.outputs.ready == 'true'
+        run: npx --yes vercel@39 deploy --prod --yes --token="$VERCEL_TOKEN"
