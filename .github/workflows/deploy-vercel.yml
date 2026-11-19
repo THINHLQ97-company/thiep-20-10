@@ -42,8 +42,8 @@ jobs:
 
       - name: Lấy cấu hình dự án Vercel
         if: steps.check.outputs.ready == 'true'
-        run: npx --yes vercel@39 pull --yes --environment=production --token="$VERCEL_TOKEN"
+        run: npx --yes vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
 
       - name: Đưa lên bản chính thức
         if: steps.check.outputs.ready == 'true'
-        run: npx --yes vercel@39 deploy --prod --yes --token="$VERCEL_TOKEN"
+        run: npx --yes vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"
