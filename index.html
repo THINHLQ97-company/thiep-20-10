@@ -409,7 +409,7 @@ const Cloud = (() => {
     onAuth(fn){ sb.auth.onAuthStateChange((_e, s) => fn(s?.user || null)); },
     signIn(){ return sb.auth.signInWithOAuth({ provider:'facebook', options:{ redirectTo: location.origin + location.pathname } }); },
     signOut(){ return sb.auth.signOut(); },
-    async isMember(uid){ return !!ok(await sb.from('members').select('user_id').eq('user_id', uid).maybeSingle()); },
+    async isMember(uid){ return ok(await sb.from('members').select('user_id,display_name').eq('user_id', uid).maybeSingle()); },
     async items(){ return ok(await sb.from('items').select('*').order('position').order('created_at')); },
     async addItem(row){ return ok(await sb.from('items').insert(row).select().single()); },
     async updateItem(id, patch){ return ok(await sb.from('items').update(patch).eq('id', id).select().single()); },
@@ -470,7 +470,8 @@ const API = CLOUD ? Cloud : Demo;
 
 /* ================================ TRẠNG THÁI ================================ */
 const S = { user:null, items:[], memories:[], urls:{}, filter:'all' };
-const meName = () => S.user?.user_metadata?.full_name || S.user?.user_metadata?.name || 'Bạn';
+// Tên gọi lấy từ cột display_name trong bảng members (đặt bằng SQL), không có thì dùng tên Facebook
+const meName = () => S.nick || S.user?.user_metadata?.full_name || S.user?.user_metadata?.name || 'Bạn';
 const meAvatar = () => S.user?.user_metadata?.avatar_url || S.user?.user_metadata?.picture || '';
 const itemById = id => S.items.find(i => i.id === id);
 const memsOf = id => S.memories.filter(m => m.item_id === id);
@@ -861,7 +862,8 @@ async function boot(){
   try{
     S.user = await API.user();
     if(S.user){
-      S.member = await API.isMember(S.user.id);
+      const row = await API.isMember(S.user.id);
+      S.member = !!row; S.nick = row?.display_name || '';
       if(S.member) await loadAll();
     }
   }catch(e){ toast('Không tải được dữ liệu: ' + e.message); }
