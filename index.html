@@ -48,7 +48,6 @@ h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
 .me{display:flex;align-items:center;gap:8px;border:0;text-decoration:none;color:var(--ink);background:#fff;border-radius:99px;padding:4px 12px 4px 4px;box-shadow:0 3px 0 var(--line)}
 .me img,.me span.av{width:30px;height:30px;border-radius:50%;object-fit:cover;background:var(--pink-soft);display:grid;place-items:center;font-weight:700;font-size:13px}
 .me b{font-size:14px}
-.demo-bar{margin:-4px 0 12px;font-size:12.5px;background:#fff3c4;border:1px dashed #e8c75a;border-radius:12px;padding:7px 10px;color:#6b5512}
 
 /* ---------- thẻ chung ---------- */
 .card{background:var(--card);border-radius:24px;padding:18px;box-shadow:0 6px 0 var(--line),0 14px 30px #c9809d1a}
@@ -115,6 +114,42 @@ h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
 @keyframes seal{0%,10%{opacity:1;transform:scale(1)}18%,84%{opacity:0;transform:scale(.4)}92%,100%{opacity:1;transform:scale(1)}}
 .pin-letter{display:block;text-decoration:none;color:inherit}
 .pin-letter .ribbon{position:absolute;left:-6px;top:14px;z-index:2;background:var(--pink);color:#fff;font-size:11px;font-weight:700;letter-spacing:.06em;padding:3px 10px;border-radius:0 99px 99px 0;box-shadow:0 2px 0 #d94b7f}
+.clock{position:relative;margin-top:16px;border-radius:28px;padding:20px 18px 18px;color:#fff;overflow:hidden;
+  background:radial-gradient(120% 90% at 0% 0%,#ffb59c 0,transparent 55%),radial-gradient(120% 90% at 100% 100%,#c4b2ff 0,transparent 55%),linear-gradient(135deg,#ff8db3,#ff6f9f);
+  box-shadow:0 7px 0 #e0588b,0 18px 34px #ff6f9f40}
+.clock::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(#ffffff40 1.2px,transparent 1.3px);background-size:18px 18px;opacity:.6}
+.clock > *{position:relative;z-index:1}
+.clock .lbl{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.92}
+.clock .days{display:flex;align-items:baseline;gap:8px;margin-top:2px}
+.clock .days b{font-family:var(--display);font-size:clamp(56px,17vw,76px);line-height:1;text-shadow:0 4px 0 #d94b7f;font-variant-numeric:tabular-nums}
+.clock .days span{font-family:var(--display);font-size:24px}
+.clock .ticks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px;perspective:500px}
+.clock .tick{background:#ffffff2b;border:1.5px solid #ffffff55;border-radius:16px;padding:8px 4px 6px;text-align:center;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.clock .tick b{display:block;font-family:var(--display);font-size:26px;line-height:1.1;font-variant-numeric:tabular-nums}
+.clock .tick b.flip{animation:flipnum .5s var(--ease)}
+@keyframes flipnum{0%{transform:rotateX(-90deg);opacity:.2}100%{transform:none;opacity:1}}
+.clock .tick small{font-size:11.5px;font-weight:600;opacity:.9}
+.clock .since{margin:12px 0 0;font-size:13.5px;opacity:.95}
+.clock .heartbeat{position:absolute;right:16px;top:14px;width:46px;height:46px;color:#fff;animation:beat 1.6s ease-in-out infinite;filter:drop-shadow(0 4px 0 #d94b7f)}
+.clock .next{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:#fff;color:#d4447a;font-weight:700;font-size:13px;padding:6px 12px;border-radius:99px}
+.mtl{position:relative;display:grid;gap:12px;padding-left:28px}
+.mtl::before{content:"";position:absolute;left:11px;top:8px;bottom:8px;width:3px;border-radius:3px;background:linear-gradient(var(--peach),var(--pink),var(--lilac))}
+.ms{position:relative;display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:10px 14px;box-shadow:0 4px 0 var(--line);text-decoration:none;color:inherit}
+.ms::before{content:"";position:absolute;left:-23px;top:50%;width:13px;height:13px;margin-top:-7px;border-radius:50%;background:#fff;border:3px solid var(--pink)}
+.ms .mi{width:40px;height:40px;flex:none;border-radius:13px;background:var(--pink-soft);color:var(--pink);display:grid;place-items:center}
+.ms .mi svg{width:24px;height:24px}
+.ms b{display:block;font-size:15px;line-height:1.3}
+.ms small{font-size:12.5px;color:var(--ink-soft)}
+.ms.main{background:linear-gradient(135deg,#fff0f5,#fff);box-shadow:0 4px 0 #ffc2d6}
+.ms.main::before{background:var(--pink)}
+.ms.main .mi{background:var(--pink);color:#fff}
+.bdays{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.bday{position:relative;background:#fff;border-radius:20px;padding:14px;box-shadow:0 5px 0 var(--line);display:grid;gap:2px;overflow:hidden}
+.bday .cake{position:absolute;right:-6px;bottom:-8px;width:62px;height:62px;color:var(--b);opacity:.9}
+.bday b{font-family:var(--display);font-size:17px}
+.bday .left{font-family:var(--display);font-size:28px;line-height:1.1;color:var(--a)}
+.bday small{font-size:12.5px;color:var(--ink-soft)}
+.bday.today{background:linear-gradient(135deg,var(--b),#fff)}
 .banner{margin-top:14px;border-radius:24px;overflow:hidden;box-shadow:0 6px 0 var(--line),0 14px 30px #c9809d1a}
 .banner img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:50% 30%}
 
@@ -318,13 +353,25 @@ h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
 /* ======================================================================
    CẤU HÌNH
    SUPABASE_URL / SUPABASE_ANON_KEY: Project URL và Publishable key (Supabase → Settings → API Keys).
-   Để trống cả hai thì trang chạy ở chế độ xem thử: dữ liệu chỉ lưu trên máy đang mở.
-   TOGETHER_SINCE: ngày hai đứa chính thức thành người yêu (YYYY-MM-DD). Để trống thì ẩn bộ đếm ngày.
+   TOGETHER_SINCE: ngày hai đứa chính thức quen nhau (YYYY-MM-DD), dùng cho bảng đếm thời gian ở trang chủ.
+   MILESTONES: các dấu mốc, thêm/sửa thoải mái. icon: chat | talk | date | card | heart.
+   BIRTHDAYS: sinh nhật (MM-DD).
    ====================================================================== */
 const CONFIG = {
   SUPABASE_URL: 'https://kaxxfzlgzcylfygjjkih.supabase.co',
   SUPABASE_ANON_KEY: 'sb_publishable_ulYPgpeXcd1V_J0Hx2_LiQ_G6bWLWpd',   // publishable key, được phép công khai
-  TOGETHER_SINCE: '',
+  TOGETHER_SINCE: '2026-10-28',
+  MILESTONES: [
+    { date:'2026-09-15', icon:'chat',  title:'Anh nhắn tin cho Duyên lần đầu' },
+    { date:'2026-09-17', icon:'talk',  title:'Hai đứa bắt đầu trò chuyện' },
+    { date:'2026-10-07', icon:'date',  title:'Lần đầu đi chơi cùng nhau' },
+    { date:'2026-10-20', icon:'card',  title:'Tấm thiệp 20/10', link:'card' },
+    { date:'2026-10-28', icon:'heart', title:'Chính thức quen nhau', main:true }
+  ],
+  BIRTHDAYS: [
+    { md:'03-22', name:'Duyên' },
+    { md:'06-30', name:'Thịnh' }
+  ],
   CARD_URL: 'https://www.2010gift.cloud/thiep-20-10/',   // thiệp 20/10, kỷ niệm đầu tiên của hai đứa
   CARD_DATE: '2026-10-20',
   PHOTO_MAX: 1600,   // cạnh dài tối đa của ảnh lưu (px)
@@ -384,19 +431,7 @@ async function compress(file, max){
 }
 function fileDate(file){ const t = file.lastModified ? new Date(file.lastModified) : new Date(); return new Date(t - t.getTimezoneOffset()*6e4).toISOString().slice(0,10); }
 
-/* ================= LỚP DỮ LIỆU: Supabase hoặc bản xem thử ================= */
-const SEED = [
-  ['Cùng nhau vào bếp','Một bữa cơm do chính tay hai đứa nấu. Ngon hay dở không quan trọng, miễn là có nhau bên bếp.','cook'],
-  ['Hóng gió biển Vũng Tàu','Ăn bánh khọt nóng giòn, rồi ngồi cạnh nhau ở Bãi Sau chờ mặt trời lặn.','beach'],
-  ['Ngắm đồi cát Phan Thiết','Dậy thật sớm, nắm tay nhau leo lên đồi cát Mũi Né đón bình minh.','dunes'],
-  ['Một ngày ở Golden Lotus','Một ngày chỉ có hai đứa, gác hết công việc lại phía sau.','lotus'],
-  ['Trốn lên Đà Lạt','Khoác áo ấm, uống ly sữa đậu nành nóng, rồi lang thang giữa rừng thông.','pine'],
-  ['Về Đà Nẵng ra mắt ba mẹ','Chuyến về nhà quan trọng nhất. Anh hơi run, nhưng anh sẽ chuẩn bị thật chu đáo.','dragon'],
-  ['Đi ăn cùng Đạt và Kim Ngân','Bữa tối bốn người đầu tiên, cùng những người bạn thân.','friends'],
-  ['Ra mắt hội nhóc văn phòng của anh','Mấy đứa nhỏ ở văn phòng mong gặp chị lâu lắm rồi.','office'],
-  ['Chụp một dải photobooth','Bốn tấm hình, tạo dáng gì cũng được, miễn là có đủ hai đứa.','booth'],
-  ['Hẹn hò ở rạp phim','Một suất phim, một bịch bắp rang, hai chiếc ghế ngồi sát bên nhau.','movie']
-];
+/* ================= LỚP DỮ LIỆU: Supabase ================= */
 const CLOUD = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY && window.supabase);
 
 const Cloud = (() => {
@@ -434,39 +469,7 @@ const Cloud = (() => {
   };
 })();
 
-const Demo = (() => {
-  const KEY = 'haidua-demo-v1';
-  const read = () => { try{ return JSON.parse(localStorage.getItem(KEY)) || null; }catch(e){ return null; } };
-  const write = s => { try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){} };
-  let mem = read() || { user:null, items: SEED.map(([title,note,th], i) => ({ id:'d'+i, title, note, theme:th, position:i+1, done_at:null, created_at:new Date().toISOString() })), memories:[] };
-  const save = () => write(mem);
-  // ảnh bản xem thử lưu trong IndexedDB của trình duyệt
-  const db = new Promise(res => { try{ const r = indexedDB.open('haidua-demo-img', 1); r.onupgradeneeded = () => r.result.createObjectStore('b'); r.onsuccess = () => res(r.result); r.onerror = () => res(null); }catch(e){ res(null); } });
-  const blobs = new Map();
-  async function putBlob(k, b){ blobs.set(k, b); const d = await db; if(!d) return; await new Promise(r => { const t = d.transaction('b','readwrite'); t.objectStore('b').put(b, k); t.oncomplete = r; t.onerror = r; }); }
-  async function getBlob(k){ if(blobs.has(k)) return blobs.get(k); const d = await db; if(!d) return null; return new Promise(r => { const q = d.transaction('b').objectStore('b').get(k); q.onsuccess = () => r(q.result || null); q.onerror = () => r(null); }); }
-  const urlCache = {};
-  return {
-    async user(){ return mem.user; },
-    onAuth(){},
-    async signIn(){ mem.user = { id:'demo-me', user_metadata:{ full_name:'Lâm Quang Thịnh' } }; save(); location.hash = '#/'; boot(); },
-    async signOut(){ mem.user = null; save(); },
-    async isMember(){ return true; },
-    async items(){ return [...mem.items].sort((a,b) => a.position - b.position); },
-    async addItem(row){ const it = { id:'d'+Date.now(), done_at:null, created_at:new Date().toISOString(), ...row }; mem.items.push(it); save(); return it; },
-    async updateItem(id, patch){ const it = mem.items.find(x => x.id === id); Object.assign(it, patch); save(); return it; },
-    async deleteItem(id){ mem.items = mem.items.filter(x => x.id !== id); mem.memories.forEach(m => { if(m.item_id === id) m.item_id = null; }); save(); },
-    async memories(){ return [...mem.memories].sort((a,b) => b.taken_on.localeCompare(a.taken_on) || b.created_at.localeCompare(a.created_at)); },
-    async addMemory(m){ const id = 'm'+Date.now()+Math.random().toString(36).slice(2,6);
-      await putBlob(id+'.jpg', m.full); await putBlob(id+'_t.jpg', m.thumb);
-      const row = { id, item_id:m.item_id, caption:m.caption, taken_on:m.taken_on, width:m.w, height:m.h, photo_path:id+'.jpg', thumb_path:id+'_t.jpg', created_by_name:m.by, created_at:new Date().toISOString() };
-      mem.memories.push(row); save(); return row; },
-    async deleteMemory(m){ mem.memories = mem.memories.filter(x => x.id !== m.id); save(); },
-    async urls(paths){ const out = {}; for(const p of paths){ if(!urlCache[p]){ const b = await getBlob(p); if(b) urlCache[p] = URL.createObjectURL(b); } if(urlCache[p]) out[p] = urlCache[p]; } return out; }
-  };
-})();
-
-const API = CLOUD ? Cloud : Demo;
+const API = Cloud;
 
 /* ================================ TRẠNG THÁI ================================ */
 const S = { user:null, items:[], memories:[], urls:{}, filter:'all' };
@@ -576,18 +579,15 @@ function openSheet(html, mount){
 function topbar(){
   const av = meAvatar();
   return `<div class="topbar"><a class="brand" href="#/"><i>${ICON.heart.replace('<svg','<svg width="18" height="18" style="color:#fff"')}</i>Hai Đứa Mình</a>
-    <a class="me" href="#/me">${av ? `<img src="${esc(av)}" alt="">` : `<span class="av">${esc(firstName(meName()).slice(0,1))}</span>`}<b>${esc(firstName(meName()))}</b></a></div>
-    ${CLOUD ? '' : '<p class="demo-bar"><b>Bản xem thử.</b> Ảnh và ghi chú chỉ lưu trên máy này. Khi nối Supabase, hai đứa sẽ đăng nhập bằng Facebook thật.</p>'}`;
+    <a class="me" href="#/me">${av ? `<img src="${esc(av)}" alt="">` : `<span class="av">${esc(firstName(meName()).slice(0,1))}</span>`}<b>${esc(firstName(meName()))}</b></a></div>`;
 }
 function progressCard(){
   const total = S.items.length, done = S.items.filter(i => i.done_at).length, pct = total ? done/total : 0, C = 2*Math.PI*42;
-  const since = CONFIG.TOGETHER_SINCE ? Math.floor((new Date(today()) - new Date(CONFIG.TOGETHER_SINCE)) / 864e5) + 1 : 0;
   const line = done === 0 ? 'Chưa có lời hẹn nào thành kỷ niệm. Mình bắt đầu từ cái dễ nhất nhé?' : done === total ? 'Hai đứa đã giữ trọn mọi lời hẹn. Viết thêm lời hẹn mới thôi!' : `Còn ${total-done} lời hẹn đang chờ hai đứa.`;
   return `<div class="card"><div class="progress"><div class="ringp"><svg viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" stroke="#fbe8ef" stroke-width="10" fill="none"/>
     <circle cx="48" cy="48" r="42" stroke="url(#gp)" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}" style="transition:stroke-dashoffset 1s"/>
     <defs><linearGradient id="gp"><stop offset="0" stop-color="#ffb59c"/><stop offset="1" stop-color="#ff6f9f"/></linearGradient></defs></svg><b>${done}/${total}<small>đã giữ</small></b></div>
-    <div><h2>Những lời hẹn của hai đứa</h2><p class="muted">${line}</p></div></div>
-    ${since > 0 ? `<div class="together">${ICON.heart.replace('<svg','<svg width="22" height="22" style="color:#ff6f9f"')}<span>Hai đứa đã bên nhau <b>${since}</b> ngày</span></div>` : ''}</div>`;
+    <div><h2>Những lời hẹn của hai đứa</h2><p class="muted">${line}</p></div></div></div>`;
 }
 function ticket(it){
   const ms = memsOf(it.id).slice(0, 4), th = theme(it.theme);
@@ -598,6 +598,76 @@ function ticket(it){
     <button class="check" type="button" data-check="${it.id}" aria-label="${it.done_at ? 'Bỏ đánh dấu' : 'Đánh dấu đã cùng nhau làm'}">${ICON.check}</button></a>`;
 }
 
+const MS_ICON = {
+  chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8"/></svg>',
+  talk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h12v8H7l-4 3z"/><path d="M9 15v1h8l4 3V9h-4"/></svg>',
+  date:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v4M17 3v4"/><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M12 17c-3-2-4-3.3-4-4.6A2 2 0 0 1 12 11a2 2 0 0 1 4 1.4c0 1.3-1 2.6-4 4.6z" fill="currentColor"/></svg>',
+  card:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+  heart:'<svg viewBox="0 0 24 24"><path d="M12 21C5 16 2 12.5 2 8.8A5 5 0 0 1 12 6a5 5 0 0 1 10 2.8C22 12.5 19 16 12 21z" fill="currentColor"/></svg>',
+  cake:'<svg viewBox="0 0 48 48" fill="currentColor"><rect x="8" y="24" width="32" height="18" rx="4"/><path d="M8 30c4 3 8 3 12 0s8-3 12 0 6 2 8 0v-2H8z" fill="#fff" opacity=".5"/><rect x="22" y="14" width="4" height="10" rx="1"/><path d="M24 6c3 3 3 6 0 8-3-2-3-5 0-8z"/></svg>'
+};
+const VN_DAY = 864e5;
+const dayDiff = (a, b) => Math.round((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / VN_DAY);
+function sinceText(iso){ const d = dayDiff(iso, today()); return d === 0 ? 'Hôm nay' : d > 0 ? `${d} ngày trước` : `Còn ${-d} ngày`; }
+// mốc "tròn N tháng" kế tiếp tính từ ngày quen nhau
+function nextMonthiversary(){
+  const s = new Date(CONFIG.TOGETHER_SINCE + 'T00:00:00'), t = new Date(today() + 'T00:00:00');
+  for(let n = 1; n < 1200; n++){
+    const d = new Date(s.getFullYear(), s.getMonth() + n, 1);
+    const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    d.setDate(Math.min(s.getDate(), last));
+    if(d >= t) return { n, days: Math.round((d - t) / VN_DAY) };
+  }
+}
+function clockCard(){
+  if(!CONFIG.TOGETHER_SINCE) return '';
+  const nm = nextMonthiversary();
+  const label = nm.n % 12 === 0 ? `tròn ${nm.n / 12} năm` : `tròn ${nm.n} tháng`;
+  return `<div class="clock" id="clock"><span class="heartbeat">${ICON.heart}</span>
+    <span class="lbl">Hai đứa đã bên nhau</span>
+    <div class="days"><b data-k="d">0</b><span>ngày</span></div>
+    <div class="ticks"><div class="tick"><b data-k="h">00</b><small>giờ</small></div><div class="tick"><b data-k="m">00</b><small>phút</small></div>
+      <div class="tick"><b data-k="s">00</b><small>giây</small></div><div class="tick"><b data-k="w">0</b><small>tuần</small></div></div>
+    <p class="since">kể từ ngày ${fmt(CONFIG.TOGETHER_SINCE)}</p>
+    <span class="next">${ICON.heart.replace('<svg','<svg width="14" height="14"')}${nm.days === 0 ? `Hôm nay hai đứa ${label}!` : `Còn ${nm.days} ngày nữa là ${label}`}</span></div>`;
+}
+let clockTimer = 0;
+function startClock(){
+  clearInterval(clockTimer);
+  const el = $('#clock'); if(!el) return;
+  const start = new Date(CONFIG.TOGETHER_SINCE + 'T00:00:00+07:00').getTime();
+  const put = (k, v) => { const b = el.querySelector(`[data-k="${k}"]`); if(b && b.textContent !== v){ b.textContent = v; if(k === 's' && !reduce){ b.classList.remove('flip'); void b.offsetWidth; b.classList.add('flip'); } } };
+  const tick = () => {
+    if(!el.isConnected){ clearInterval(clockTimer); return; }
+    let t = Math.max(0, Math.floor((Date.now() - start) / 1000));
+    const d = Math.floor(t / 86400); t %= 86400;
+    put('d', String(d)); put('w', String(Math.floor(d / 7)));
+    put('h', String(Math.floor(t / 3600)).padStart(2,'0')); put('m', String(Math.floor(t % 3600 / 60)).padStart(2,'0')); put('s', String(t % 60).padStart(2,'0'));
+  };
+  tick(); clockTimer = setInterval(tick, 1000);
+}
+function milestones(){
+  const list = [...(CONFIG.MILESTONES || [])].sort((a, b) => a.date.localeCompare(b.date));
+  if(!list.length) return '';
+  return `<div class="section"><div class="section-h"><h2>Dấu mốc của hai đứa</h2></div><div class="mtl">
+    ${list.map(m => { const tag = m.link === 'card' && CONFIG.CARD_URL ? 'a' : 'div';
+      return `<${tag} class="ms${m.main ? ' main' : ''}"${tag === 'a' ? ` href="${esc(CONFIG.CARD_URL)}"` : ''}><span class="mi">${MS_ICON[m.icon] || MS_ICON.heart}</span>
+        <span><b>${esc(m.title)}</b><small>${fmt(m.date)} · ${sinceText(m.date)}</small></span></${tag}>`; }).join('')}
+  </div></div>`;
+}
+function birthdays(){
+  const list = CONFIG.BIRTHDAYS || []; if(!list.length) return '';
+  const t = new Date(today() + 'T00:00:00');
+  const cards = list.map((b, i) => {
+    const [mm, dd] = b.md.split('-').map(Number);
+    let d = new Date(t.getFullYear(), mm - 1, dd); if(d < t) d = new Date(t.getFullYear() + 1, mm - 1, dd);
+    const left = Math.round((d - t) / VN_DAY);
+    return { b, left, html:`<div class="bday ${i ? 't-office' : 't-heart'}${left === 0 ? ' today' : ''}"><span class="cake">${MS_ICON.cake}</span>
+      <b>Sinh nhật ${esc(b.name)}</b><small>${String(dd).padStart(2,'0')}/${String(mm).padStart(2,'0')}</small>
+      <span class="left">${left === 0 ? 'Hôm nay!' : left + ' ngày'}</span><small>${left === 0 ? 'Chúc mừng sinh nhật!' : 'nữa là tới'}</small></div>` };
+  }).sort((a, b) => a.left - b.left);
+  return `<div class="section"><div class="section-h"><h2>Sinh nhật</h2></div><div class="bdays">${cards.map(c => c.html).join('')}</div></div>`;
+}
 function originCard(){
   return `<div class="section"><div class="section-h"><h2>Nơi mọi chuyện bắt đầu</h2></div>
     <a class="card origin" href="${esc(CONFIG.CARD_URL)}" data-tilt>
@@ -637,9 +707,12 @@ function viewHome(){
   const doneRecent = S.items.filter(i => i.done_at).sort((a,b) => b.done_at.localeCompare(a.done_at)).slice(0, 3);
   return `${topbar()}
     <h1 style="font-size:30px">Chào ${esc(firstName(meName()))}!</h1>
-    <p class="muted" style="margin:4px 0 0">${latest.length ? 'Vuốt nhẹ vòng ảnh để xem lại những ngày gần đây.' : 'Hôm nay mình làm gì cùng nhau nhỉ?'}</p>
+    <p class="muted" style="margin:4px 0 0">Hôm nay mình làm gì cùng nhau nhỉ?</p>
+    ${clockCard()}
     ${carousel(cards)}
     ${progressCard()}
+    ${milestones()}
+    ${birthdays()}
     ${CONFIG.CARD_URL ? originCard() : ''}
     ${next.length ? `<div class="section"><div class="section-h"><h2>Lời hẹn đang chờ</h2><a href="#/list">Xem hết</a></div><div class="tickets">${next.map(ticket).join('')}</div></div>` : ''}
     ${doneRecent.length ? `<div class="section"><div class="section-h"><h2>Vừa thành kỷ niệm</h2><a href="#/list?f=done">Xem hết</a></div><div class="tickets">${doneRecent.map(ticket).join('')}</div></div>` : ''}`;
@@ -686,6 +759,7 @@ function viewMe(){
   const done = S.items.filter(i => i.done_at).sort((a,b) => a.done_at.localeCompare(b.done_at));
   return `${topbar()}<h1 style="font-size:30px">Hai đứa</h1>
     <div class="banner"><img src="assets/couple.webp" alt="Hai đứa ngồi cạnh nhau trên thuyền"></div>
+    ${milestones()}
     <div class="section"><div class="section-h"><h2>Những ngày mình đã giữ lời</h2></div>
       ${done.length ? `<div class="card" style="display:grid;gap:12px">${done.map(i => `<a href="#/item/${i.id}" class="t-${theme(i.theme)}" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit">
         <span style="width:40px;height:40px;border-radius:12px;background:var(--b);color:var(--a);display:grid;place-items:center;flex:none">${THEMES[theme(i.theme)].icon.replace('<svg','<svg width="24" height="24"')}</span>
@@ -712,7 +786,7 @@ function render(){
   const views = { home:viewHome, list:viewList, item:() => viewItem(r.id), memories:viewMemories, me:viewMe };
   app.innerHTML = (views[r.name] || viewHome)();
   document.querySelectorAll('#tabbar a').forEach(a => a.classList.toggle('on', a.dataset.tab === (r.name === 'item' ? 'list' : r.name)));
-  bindCarousel(app); bindTilt(app); bindView(app, r);
+  bindCarousel(app); bindTilt(app); bindView(app, r); startClock();
 }
 function bindView(app, r){
   app.querySelectorAll('[data-check]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); const it = itemById(b.dataset.check); it.done_at ? undoDone(it) : markDone(it); }));
@@ -859,6 +933,7 @@ function openMemory(id){
 $('#fab').addEventListener('click', () => uploadSheet(route().name === 'item' ? route().id : ''));
 addEventListener('hashchange', () => { if(S.user) { render(); scrollTo(0, 0); } });
 async function boot(){
+  if(!API){ $('#app').innerHTML = `<section class="login"><div class="empty">${THEMES.heart.icon}<h2>Chưa mở được cuốn sổ</h2><p class="muted">Mạng đang chập chờn. Tải lại trang thử nhé.</p><button class="btn" type="button" onclick="location.reload()">Tải lại</button></div></section>`; return; }
   try{
     S.user = await API.user();
     if(S.user){
@@ -869,7 +944,7 @@ async function boot(){
   }catch(e){ toast('Không tải được dữ liệu: ' + e.message); }
   render();
 }
-API.onAuth(u => { if((u?.id || null) !== (S.user?.id || null)) boot(); });
+API?.onAuth(u => { if((u?.id || null) !== (S.user?.id || null)) boot(); });
 boot();
 </script>
 
