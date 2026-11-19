@@ -69,6 +69,16 @@ h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
 .fb{background:#1877f2;box-shadow:0 4px 0 #0d5bc4;font-size:17px;padding:14px 24px}
 .fb:active{box-shadow:0 1px 0 #0d5bc4}
 .lock-note{font-size:13px;display:flex;align-items:center;gap:6px}
+.cover{position:relative;width:min(84vw,340px);perspective:1000px;margin-top:4px}
+.cover .pola{--rot:-3deg;padding:10px 10px 14px;animation:floaty 5s ease-in-out infinite}
+.cover .pola .ph{aspect-ratio:1312/1199}
+.cover .pola figcaption{font-size:21px;text-align:center;padding-top:10px}
+.cover .pola .tape{width:96px;margin-left:-48px;height:26px;top:-12px}
+@keyframes floaty{50%{translate:0 -8px}}
+.cover .hrt{position:absolute;width:22px;height:22px;color:var(--pink);opacity:0;animation:rise 4.5s ease-in infinite;pointer-events:none}
+@keyframes rise{0%{transform:translateY(0) scale(.5);opacity:0}20%{opacity:.9}100%{transform:translateY(-140px) scale(1.15);opacity:0}}
+.banner{margin-top:14px;border-radius:24px;overflow:hidden;box-shadow:0 6px 0 var(--line),0 14px 30px #c9809d1a}
+.banner img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:50% 30%}
 
 /* ---------- vòng xoay 3D ---------- */
 .stage3d{position:relative;height:280px;perspective:900px;perspective-origin:50% 30%;touch-action:pan-y;user-select:none;-webkit-user-select:none}
@@ -548,9 +558,10 @@ function ticket(it){
 }
 
 function viewLogin(){
-  const cards = Object.keys(THEMES).filter(k => k !== 'travel').slice(0, 9).map(k => polaroid(null, { theme:k, label:THEMES[k].name, mini:true, rot:0, tilt:false, hint:'' }));
+  const hearts = [[8,70,0],[86,62,1.4],[18,30,2.6],[78,22,3.4]].map(([x,y,d]) => `<span class="hrt" style="left:${x}%;top:${y}%;animation-delay:${d}s">${ICON.heart}</span>`).join('');
   return `<section class="login">
-    ${carousel(cards)}
+    <div class="cover"><figure class="pola t-heart" data-tilt><span class="tape"></span><div class="ph"><img src="assets/couple.webp" alt="Hai đứa ngồi cạnh nhau trên thuyền, cô ấy cười híp mắt"></div>
+      <figcaption><span>Thịnh &amp; Duyên</span></figcaption></figure>${hearts}</div>
     <h1>Hai Đứa Mình</h1>
     <p class="muted">Cuốn sổ nhỏ ghi lại những điều hai đứa sẽ làm cùng nhau, và những tấm ảnh sau mỗi lần làm được.</p>
     <button class="btn fb" id="loginBtn" type="button">${ICON.fb} Đăng nhập bằng Facebook</button>
@@ -614,6 +625,7 @@ function viewMemories(){
 function viewMe(){
   const done = S.items.filter(i => i.done_at).sort((a,b) => a.done_at.localeCompare(b.done_at));
   return `${topbar()}<h1 style="font-size:30px">Hai đứa</h1>
+    <div class="banner"><img src="assets/couple.webp" alt="Hai đứa ngồi cạnh nhau trên thuyền"></div>
     <div class="section"><div class="section-h"><h2>Những ngày đã đánh dấu</h2></div>
       ${done.length ? `<div class="card" style="display:grid;gap:12px">${done.map(i => `<a href="#/item/${i.id}" class="t-${theme(i.theme)}" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit">
         <span style="width:40px;height:40px;border-radius:12px;background:var(--b);color:var(--a);display:grid;place-items:center;flex:none">${THEMES[theme(i.theme)].icon.replace('<svg','<svg width="24" height="24"')}</span>
@@ -634,7 +646,7 @@ function route(){
 function render(){
   const app = $('#app'), r = route();
   $('#tabbar').hidden = !S.user || !S.member;
-  if(!S.user){ app.innerHTML = viewLogin(); $('#loginBtn').onclick = () => API.signIn().catch(e => toast('Không đăng nhập được: ' + e.message)); bindCarousel(app); return; }
+  if(!S.user){ app.innerHTML = viewLogin(); $('#loginBtn').onclick = () => API.signIn().catch(e => toast('Không đăng nhập được: ' + e.message)); bindCarousel(app); bindTilt(app); return; }
   if(!S.member){ app.innerHTML = viewNotMember(); $('#logoutBtn').onclick = logout; return; }
   if(r.name === 'list' && r.q.get('f')) S.filter = r.q.get('f');
   const views = { home:viewHome, list:viewList, item:() => viewItem(r.id), memories:viewMemories, me:viewMe };
