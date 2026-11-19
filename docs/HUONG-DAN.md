@@ -1,6 +1,6 @@
 # Hai Đứa Mình: hướng dẫn bật đăng nhập Facebook
 
-Trang chạy ở `https://www.2010gift.cloud/hai-dua/`. Khi `SUPABASE_URL` và `SUPABASE_ANON_KEY` trong `index.html` còn trống, trang ở **chế độ xem thử**: dữ liệu chỉ lưu trên máy đang mở. Làm 4 bước dưới đây để chuyển sang bản thật.
+Trang chạy ở trang chủ `https://www.2010gift.cloud/` (tấm thiệp 20/10 nằm ở `/thiep-20-10/`). Khi `SUPABASE_URL` và `SUPABASE_ANON_KEY` trong `index.html` còn trống, trang ở **chế độ xem thử**: dữ liệu chỉ lưu trên máy đang mở. Làm 4 bước dưới đây để chuyển sang bản thật.
 
 Trang được khoá bằng 3 lớp:
 
@@ -13,13 +13,13 @@ Trang được khoá bằng 3 lớp:
 ## Bước 1. Tạo dự án Supabase (miễn phí)
 
 1. Vào https://supabase.com, đăng nhập bằng GitHub, bấm **New project**. Chọn region **Singapore**, đặt mật khẩu database rồi lưu lại.
-2. Vào **SQL Editor → New query**, dán toàn bộ file `supabase-setup.sql`, bấm **Run**. Lệnh này tạo bảng, kho ảnh riêng tư và 10 điều đầu tiên.
+2. Vào **SQL Editor → New query**, dán toàn bộ file `docs/supabase-setup.sql`, bấm **Run**. Lệnh này tạo bảng, kho ảnh riêng tư và 10 lời hẹn đầu tiên.
 3. Vào **Project Settings → API**, chép 2 giá trị:
    - **Project URL**, dạng `https://abcd.supabase.co`
    - **anon public key**, chuỗi dài bắt đầu bằng `eyJ…`
 4. Vào **Authentication → URL Configuration**:
-   - **Site URL:** `https://www.2010gift.cloud/hai-dua/`
-   - **Redirect URLs:** thêm `https://www.2010gift.cloud/hai-dua/`
+   - **Site URL:** `https://www.2010gift.cloud/`
+   - **Redirect URLs:** thêm `https://www.2010gift.cloud/`
 
 ## Bước 2. Tạo ứng dụng Facebook
 
@@ -39,7 +39,7 @@ Trang được khoá bằng 3 lớp:
 
 ## Bước 4. Điền khoá vào trang và mời hai người vào
 
-1. Mở `hai-dua/index.html`, tìm khối `CONFIG` ở đầu phần `<script>` rồi điền:
+1. Mở `index.html` ở thư mục gốc repo, tìm khối `CONFIG` ở đầu phần `<script>` rồi điền:
    ```js
    SUPABASE_URL: 'https://abcd.supabase.co',
    SUPABASE_ANON_KEY: 'eyJ…',
@@ -48,7 +48,7 @@ Trang được khoá bằng 3 lớp:
    Khoá *anon* được phép công khai. Dữ liệu được bảo vệ bằng bảng `members` và các quy tắc bảo mật trong file SQL. **Không bao giờ** dán khoá `service_role` vào trang.
 2. Đẩy lên GitHub. Vercel sẽ tự cập nhật trang.
 3. Anh và Duyên **mỗi người đăng nhập một lần**. Lúc này trang sẽ báo "Trang này là của riêng hai người", vì hai người chưa có trong danh sách. Đó là bình thường.
-4. Vào Supabase **Authentication → Users** để kiểm tra chỉ có đúng 2 tài khoản. Sau đó chạy đoạn SQL ở mục 6 cuối file `supabase-setup.sql`, nhớ bỏ dấu `--` ở đầu các dòng.
+4. Vào Supabase **Authentication → Users** để kiểm tra chỉ có đúng 2 tài khoản. Sau đó chạy đoạn SQL ở mục 6 cuối file `docs/supabase-setup.sql`, nhớ bỏ dấu `--` ở đầu các dòng.
 5. Vào **Authentication → Sign In / Providers**, tắt **Allow new users to sign up**.
 6. Tải lại trang. Xong!
 

@@ -1,30 +1,23 @@
-# Thành phố của những cây cầu
+# 2010gift.cloud
 
-Thiệp 20/10 tương tác, kể chuyện Đà Nẵng và Sài Gòn qua 6 màn hình, tối ưu cho điện thoại.
-Mở bằng mã QR trên thiệp giấy, cần mật khẩu để mở hộp quà.
+| Đường dẫn | Nội dung |
+|---|---|
+| `/` | **Hai Đứa Mình**: sổ lời hẹn và ảnh kỷ niệm của hai người, đăng nhập bằng Facebook (`index.html`, `assets/`) |
+| `/thiep-20-10/` | Thiệp 20/10 "Thành phố của những cây cầu" (`thiep-20-10/`) |
+| `/hai-dua/` | Đường dẫn cũ, tự chuyển về trang chủ (`vercel.json`) |
 
-## Cấu trúc
-- `index.html`: toàn bộ trang (HTML, CSS, JS). Nội dung chữ nằm trong khối `CONFIG` ở đầu phần `<script>`.
-- `assets/dragon.glb`: mô hình cầu Rồng 3D (Three.js tải từ jsDelivr khi tới chương cây cầu).
-- `assets/her.webp`, `assets/him.webp`: ảnh đại diện.
-- `assets/bg-portrait.webp`, `assets/bg-wide.webp`: ảnh nền điện thoại và máy tính.
-- `assets/bg-music.mp3`: nhạc nền "Gót Hồng".
+- `docs/HUONG-DAN.md`: các bước bật đăng nhập Facebook qua Supabase.
+- `docs/supabase-setup.sql`: dựng bảng, kho ảnh riêng tư, 10 lời hẹn đầu tiên.
+- `in-thiep/`: mã QR để in.
+- `.github/workflows/supabase-keepalive.yml`: giữ Supabase không tự tạm dừng.
 
-## Đổi mật khẩu
+Cả hai trang là HTML tĩnh, không cần build. Chạy thử trên máy bằng `npx serve .` rồi mở `http://localhost:3000`.
+
+## Thiệp 20/10: đổi mật khẩu
 Mật khẩu được chuẩn hoá (chữ thường, bỏ dấu, bỏ khoảng trắng) rồi so bằng SHA-256:
 
 ```
 node -e "console.log(require('crypto').createHash('sha256').update('dnsg2010:' + 'matkhaukhongdau').digest('hex'))"
 ```
 
-Dán kết quả vào `PASS_HASHES` trong `CONFIG`.
-
-## Chạy thử trên máy
-Trang cần chạy qua HTTP(S), không mở trực tiếp file:
-
-```
-npx serve .
-```
-
-## Deploy
-Tải nguyên thư mục lên Netlify, Vercel hoặc GitHub Pages. Trang cần HTTPS để kiểm tra mật khẩu.
+Dán kết quả vào `PASS_HASHES` trong `CONFIG` của `thiep-20-10/index.html`.

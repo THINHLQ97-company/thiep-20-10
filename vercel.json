@@ -1,0 +1,6 @@
+{
+  "redirects": [
+    { "source": "/hai-dua", "destination": "/", "permanent": false },
+    { "source": "/hai-dua/:path*", "destination": "/", "permanent": false }
+  ]
+}
