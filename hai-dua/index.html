@@ -77,6 +77,23 @@ h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
 @keyframes floaty{50%{translate:0 -8px}}
 .cover .hrt{position:absolute;width:22px;height:22px;color:var(--pink);opacity:0;animation:rise 4.5s ease-in infinite;pointer-events:none}
 @keyframes rise{0%{transform:translateY(0) scale(.5);opacity:0}20%{opacity:.9}100%{transform:translateY(-140px) scale(1.15);opacity:0}}
+.origin{display:flex;align-items:center;gap:16px;text-decoration:none;color:inherit;transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .3s var(--ease)}
+.origin b{display:block;font-family:var(--display);font-size:20px;line-height:1.15}
+.origin small{display:block;font-size:14px;margin-top:4px}
+.origin .go{display:inline-block;margin-top:8px;font-weight:700;font-size:14px;color:var(--pink)}
+.env3d{position:relative;flex:none;width:112px;height:80px;perspective:500px}
+.env3d::before{content:"";position:absolute;inset:0;border-radius:8px;background:#ffc9b3}
+.env3d .paper{position:absolute;left:9px;right:9px;top:6px;height:66px;z-index:1;border-radius:4px;background:#fff;padding:10px 9px;display:grid;gap:6px;align-content:start;animation:peek 6s ease-in-out infinite}
+.env3d .paper i{display:block;height:3px;border-radius:2px;background:#ffd5e3}
+.env3d .paper i:nth-child(2){width:80%}.env3d .paper i:nth-child(3){width:60%}
+.env3d .pocket{position:absolute;inset:0;z-index:2;border-radius:8px;background:#fff1e6;clip-path:polygon(0 32%,50% 70%,100% 32%,100% 100%,0 100%)}
+.env3d .flap{position:absolute;left:0;right:0;top:0;height:62%;z-index:3;background:#ffb999;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:50% 0;animation:flap 6s ease-in-out infinite}
+.env3d .seal{position:absolute;left:50%;top:44%;z-index:4;width:24px;height:24px;margin:-12px 0 0 -12px;color:var(--pink);animation:seal 6s ease-in-out infinite}
+@keyframes flap{0%,12%{transform:rotateX(0);z-index:3}24%,78%{transform:rotateX(180deg);z-index:0}90%,100%{transform:rotateX(0);z-index:3}}
+@keyframes peek{0%,26%{transform:translateY(0)}40%,68%{transform:translateY(-30px)}80%,100%{transform:translateY(0)}}
+@keyframes seal{0%,10%{opacity:1;transform:scale(1)}18%,84%{opacity:0;transform:scale(.4)}92%,100%{opacity:1;transform:scale(1)}}
+.pin-letter{display:block;text-decoration:none;color:inherit}
+.pin-letter .ribbon{position:absolute;left:-6px;top:14px;z-index:2;background:var(--pink);color:#fff;font-size:11px;font-weight:700;letter-spacing:.06em;padding:3px 10px;border-radius:0 99px 99px 0;box-shadow:0 2px 0 #d94b7f}
 .banner{margin-top:14px;border-radius:24px;overflow:hidden;box-shadow:0 6px 0 var(--line),0 14px 30px #c9809d1a}
 .banner img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:50% 30%}
 
@@ -287,6 +304,8 @@ const CONFIG = {
   SUPABASE_URL: '',
   SUPABASE_ANON_KEY: '',
   TOGETHER_SINCE: '',
+  CARD_URL: 'https://www.2010gift.cloud/',   // thiệp 20/10, kỷ niệm đầu tiên của hai đứa
+  CARD_DATE: '2026-10-20',
   PHOTO_MAX: 1600,   // cạnh dài tối đa của ảnh lưu (px)
   THUMB_MAX: 520,    // cạnh dài tối đa của ảnh nhỏ (px)
   QUALITY: .82
@@ -557,6 +576,17 @@ function ticket(it){
     <button class="check" type="button" data-check="${it.id}" aria-label="${it.done_at ? 'Bỏ đánh dấu' : 'Đánh dấu đã cùng nhau làm'}">${ICON.check}</button></a>`;
 }
 
+function originCard(){
+  return `<div class="section"><div class="section-h"><h2>Nơi mọi chuyện bắt đầu</h2></div>
+    <a class="card origin" href="${esc(CONFIG.CARD_URL)}" data-tilt>
+      <span class="env3d" aria-hidden="true"><span class="paper"><i></i><i></i><i></i></span><span class="pocket"></span><span class="flap"></span><span class="seal">${ICON.heart}</span></span>
+      <span><b>Tấm thiệp 20/10</b><small class="muted">Món quà đầu tiên anh gửi Duyên. Mọi lời hẹn trong cuốn sổ này đều bắt đầu từ đây.</small><span class="go">Mở lại thiệp →</span></span></a></div>`;
+}
+function originPin(){
+  return `<a class="pin-letter" href="${esc(CONFIG.CARD_URL)}"><figure class="pola t-heart" style="--rot:-2deg" data-tilt><span class="ribbon">ĐẦU TIÊN</span><span class="tape"></span>
+    <div class="ph"><img src="assets/couple.webp" alt="Hai đứa ngồi cạnh nhau trên thuyền"></div>
+    <figcaption><span>Tấm thiệp 20/10, nơi mọi chuyện bắt đầu</span><time>${fmt(CONFIG.CARD_DATE)}</time></figcaption><span class="stk">${ICON.heart}</span></figure></a>`;
+}
 function viewLogin(){
   const hearts = [[8,70,0],[86,62,1.4],[18,30,2.6],[78,22,3.4]].map(([x,y,d]) => `<span class="hrt" style="left:${x}%;top:${y}%;animation-delay:${d}s">${ICON.heart}</span>`).join('');
   return `<section class="login">
@@ -584,6 +614,7 @@ function viewHome(){
     <p class="muted" style="margin:4px 0 0">${latest.length ? 'Vuốt nhẹ vòng ảnh để xem lại những ngày gần đây.' : 'Hôm nay mình làm gì cùng nhau nhỉ?'}</p>
     ${carousel(cards)}
     ${progressCard()}
+    ${CONFIG.CARD_URL ? originCard() : ''}
     ${next.length ? `<div class="section"><div class="section-h"><h2>Lời hẹn đang chờ</h2><a href="#/list">Xem hết</a></div><div class="tickets">${next.map(ticket).join('')}</div></div>` : ''}
     ${doneRecent.length ? `<div class="section"><div class="section-h"><h2>Vừa thành kỷ niệm</h2><a href="#/list?f=done">Xem hết</a></div><div class="tickets">${doneRecent.map(ticket).join('')}</div></div>` : ''}`;
 }
@@ -616,11 +647,14 @@ function viewItem(id){
     <div class="section" style="justify-items:center"><button class="btn ghost small" id="editItem" type="button">Sửa hoặc xoá lời hẹn</button></div>`;
 }
 function viewMemories(){
+  const pinKey = CONFIG.CARD_URL ? CONFIG.CARD_DATE.slice(0,7) : '';
   if(!S.memories.length) return `${topbar()}<h1 style="font-size:30px">Kỷ niệm</h1><div class="card empty" style="margin-top:14px">${ICON.camera}<h2>Chưa có tấm ảnh nào</h2>
-    <p class="muted" style="margin:0">Bấm nút máy ảnh bên dưới để cất tấm ảnh đầu tiên vào đây.</p></div>`;
-  const groups = {}; S.memories.forEach(m => (groups[m.taken_on.slice(0,7)] ||= []).push(m));
+    <p class="muted" style="margin:0">Bấm nút máy ảnh bên dưới để cất tấm ảnh đầu tiên vào đây.</p></div>
+    ${pinKey ? `<div class="section month"><h3>${monthName(pinKey)}</h3><div class="gallery">${originPin()}</div></div>` : ''}`;
+  const groups = {}; if(pinKey) groups[pinKey] = [];
+  S.memories.forEach(m => (groups[m.taken_on.slice(0,7)] ||= []).push(m));
   return `${topbar()}<h1 style="font-size:30px">Kỷ niệm</h1><p class="muted" style="margin:4px 0 0">${S.memories.length} tấm ảnh · chạm vào một tấm để lật xem mặt sau</p>
-    ${Object.entries(groups).map(([k, ms]) => `<div class="section month"><h3>${monthName(k)}</h3><div class="gallery">${ms.map(m => polaroid(m)).join('')}</div></div>`).join('')}`;
+    ${Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0])).map(([k, ms]) => `<div class="section month"><h3>${monthName(k)}</h3><div class="gallery">${ms.map(m => polaroid(m)).join('')}${k === pinKey ? originPin() : ''}</div></div>`).join('')}`;
 }
 function viewMe(){
   const done = S.items.filter(i => i.done_at).sort((a,b) => a.done_at.localeCompare(b.done_at));
