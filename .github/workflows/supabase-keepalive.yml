@@ -1,0 +1,27 @@
+# Supabase gói miễn phí tạm dừng dự án sau 7 ngày không có truy cập.
+# Việc này gọi nhẹ vào cơ sở dữ liệu mỗi 3 ngày để trang "Hai Đứa Mình" luôn sẵn sàng.
+# Cần thêm 2 secret trong GitHub → Settings → Secrets and variables → Actions:
+#   SUPABASE_URL       (vd https://abcd.supabase.co)
+#   SUPABASE_ANON_KEY  (khoá anon public)
+name: Giữ Supabase luôn thức
+
+on:
+  schedule:
+    - cron: "17 2 */3 * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gọi Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "Chưa cấu hình secret, bỏ qua."; exit 0
+          fi
+          curl -sS -o /dev/null -w "HTTP %{http_code}\n" \
+            "$SUPABASE_URL/rest/v1/items?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY"
