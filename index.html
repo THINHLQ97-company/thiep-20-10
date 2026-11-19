@@ -151,6 +151,28 @@ h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
 .bday .left{font-family:var(--display);font-size:28px;line-height:1.1;color:var(--a)}
 .bday small{font-size:12.5px;color:var(--ink-soft)}
 .bday.today{background:linear-gradient(135deg,var(--b),#fff)}
+.welcome{position:fixed;inset:0;z-index:95;display:grid;place-items:center;align-content:center;gap:10px;text-align:center;cursor:pointer;
+  padding:calc(20px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));
+  background:radial-gradient(circle at 15% 10%,#ffe0eb 0 22%,transparent 50%),radial-gradient(circle at 90% 85%,#e6ddff 0 20%,transparent 48%),radial-gradient(circle at 85% 15%,#e2f4ff 0 14%,transparent 40%),var(--paper);
+  transition:opacity .7s ease,transform .7s ease}
+.welcome::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background-image:radial-gradient(#f3c9d8 1.2px,transparent 1.3px);background-size:22px 22px}
+.welcome > *{position:relative}
+.welcome.out{opacity:0;transform:scale(1.06);pointer-events:none}
+.w-pola{width:min(68vw,280px);perspective:900px;margin-bottom:6px}
+.w-pola .pola{--rot:-4deg;padding:9px 9px 12px;animation:wdrop 1.2s var(--ease) both}
+.w-pola .pola .ph{aspect-ratio:1312/1199}
+.w-pola figcaption{font-size:19px;text-align:center;padding-top:8px}
+@keyframes wdrop{0%{transform:translateY(-70vh) rotate(-24deg) rotateX(50deg);opacity:0}60%{opacity:1}100%{transform:rotate(-4deg)}}
+.w-hi{font-family:var(--display);font-weight:800;font-size:clamp(40px,12vw,56px);line-height:1.05;color:var(--pink);text-shadow:0 4px 0 #ffd0df;margin:4px 0 0}
+.w-hi .w-word{display:inline-block;white-space:nowrap}
+.w-hi .w-word span{display:inline-block;animation:wpop .6s var(--ease) both}
+@keyframes wpop{0%{transform:translateY(24px) scale(.4);opacity:0}100%{transform:none;opacity:1}}
+.w-line{margin:0;max-width:30ch;font-size:16.5px;color:var(--ink-soft);animation:wfade .6s ease 1.5s both}
+.w-days{display:inline-flex;align-items:baseline;gap:8px;margin-top:6px;padding:8px 18px;border-radius:99px;background:#fff;box-shadow:0 4px 0 var(--line);font-weight:600;animation:wfade .6s ease 1.8s both}
+.w-days b{font-family:var(--display);font-size:26px;color:var(--pink);font-variant-numeric:tabular-nums}
+.w-go{margin-top:14px;animation:wfade .6s ease 2.3s both}
+.w-skip{font-size:12.5px;color:var(--ink-soft);animation:wfade .6s ease 2.6s both}
+@keyframes wfade{from{opacity:0;transform:translateY(10px)}}
 .banner{margin-top:14px;border-radius:24px;overflow:hidden;box-shadow:0 6px 0 var(--line),0 14px 30px #c9809d1a}
 .banner img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:50% 30%}
 
@@ -757,15 +779,9 @@ function viewMemories(){
     ${Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0])).map(([k, ms]) => `<div class="section month"><h3>${monthName(k)}</h3><div class="gallery">${ms.map(m => polaroid(m)).join('')}${k === pinKey ? originPin() : ''}</div></div>`).join('')}`;
 }
 function viewMe(){
-  const done = S.items.filter(i => i.done_at).sort((a,b) => a.done_at.localeCompare(b.done_at));
   return `${topbar()}<h1 style="font-size:30px">Hai đứa</h1>
     <div class="banner"><img src="assets/couple.webp" alt="Hai đứa ngồi cạnh nhau trên thuyền"></div>
     ${milestones()}
-    <div class="section"><div class="section-h"><h2>Những ngày mình đã giữ lời</h2></div>
-      ${done.length ? `<div class="card" style="display:grid;gap:12px">${done.map(i => `<a href="#/item/${i.id}" class="t-${theme(i.theme)}" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit">
-        <span style="width:40px;height:40px;border-radius:12px;background:var(--b);color:var(--a);display:grid;place-items:center;flex:none">${THEMES[theme(i.theme)].icon.replace('<svg','<svg width="24" height="24"')}</span>
-        <span style="flex:1;min-width:0"><b style="display:block;font-size:15px">${esc(i.title)}</b><small class="muted">${fmt(i.done_at)}</small></span></a>`).join('')}</div>`
-        : '<p class="muted">Chưa có ngày nào. Lời hẹn đầu tiên vẫn đang chờ hai đứa.</p>'}</div>
     <div class="section"><div class="card" style="display:grid;gap:10px"><b>Đang đăng nhập: ${esc(S.user?.email || meName())}</b>
       <span class="muted" style="font-size:14px">${S.memories.length} tấm ảnh · ${S.items.length} lời hẹn</span>
       <button class="btn ghost small" id="logoutBtn" type="button" style="justify-self:start">Đăng xuất</button></div></div>`;
@@ -807,7 +823,7 @@ function bindView(app, r){
 
 /* ================================ HÀNH ĐỘNG ================================ */
 async function refresh(){ await loadAll(); render(); }
-async function logout(){ await API.signOut(); S.user = null; S.member = false; location.hash = '#/'; render(); }
+async function logout(){ try{ sessionStorage.removeItem('hd-welcome'); }catch(e){} await API.signOut(); S.user = null; S.member = false; location.hash = '#/'; render(); }
 
 function markDone(it){
   openSheet(`<h2>Mình làm được rồi!</h2><p class="muted" style="margin:0">${esc(it.title)}</p>
@@ -930,6 +946,36 @@ function openMemory(id){
   };
 }
 
+/* ============================ MÀN HÌNH CHÀO SAU ĐĂNG NHẬP ============================ */
+const GREET = {
+  'Duyên': ['Chào em, Duyên!', 'Anh đợi em ở đây nãy giờ đó.'],
+  'Thịnh': ['Chào anh, Thịnh!', 'Hôm nay mình làm gì cho Duyên vui nhỉ?']
+};
+function welcome(){
+  try{ if(sessionStorage.getItem('hd-welcome')) return; sessionStorage.setItem('hd-welcome', '1'); }catch(e){}
+  const name = firstName(meName());
+  const [hi, line] = GREET[name] || [`Chào ${name}!`, 'Mở cuốn sổ của hai đứa nào.'];
+  const days = CONFIG.TOGETHER_SINCE ? Math.max(0, dayDiff(CONFIG.TOGETHER_SINCE, today())) : 0;
+  const w = document.createElement('div'); w.className = 'welcome'; w.setAttribute('role', 'dialog'); w.setAttribute('aria-label', hi);
+  w.innerHTML = `<div class="w-pola"><figure class="pola t-heart"><span class="tape"></span><div class="ph"><img src="assets/couple.webp" alt=""></div>
+      <figcaption><span>Thịnh &amp; Duyên</span></figcaption><span class="stk">${ICON.heart}</span></figure></div>
+    <h1 class="w-hi">${(() => { let i = 0; return hi.split(' ').map(word => `<span class="w-word">${[...word].map(c => `<span style="animation-delay:${(0.75 + (i++) * 0.045).toFixed(2)}s">${esc(c)}</span>`).join('')}</span>`).join(' '); })()}</h1>
+    <p class="w-line">${esc(line)}</p>
+    ${days ? `<span class="w-days">Hai đứa đã bên nhau <b id="wDays">0</b> ngày</span>` : ''}
+    <button class="btn w-go" type="button">Vào nhà mình</button>
+    <span class="w-skip">Chạm bất kỳ đâu để vào</span>`;
+  document.body.appendChild(w);
+  let done = false;
+  const close = () => { if(done) return; done = true; w.classList.add('out'); setTimeout(() => w.remove(), 700); };
+  w.addEventListener('click', close);
+  setTimeout(close, 6500);
+  setTimeout(() => FX.burst(innerWidth / 2, innerHeight * .32, 60), 1100);
+  const el = w.querySelector('#wDays');
+  if(el){ const t0 = performance.now() + 1800, dur = 1200;
+    const step = t => { const k = Math.min(1, Math.max(0, (t - t0) / dur)); el.textContent = Math.round(days * (1 - Math.pow(1 - k, 3))); if(k < 1 && !done) requestAnimationFrame(step); };
+    requestAnimationFrame(step); }
+}
+
 /* ================================= KHỞI ĐỘNG ================================= */
 $('#fab').addEventListener('click', () => uploadSheet(route().name === 'item' ? route().id : ''));
 addEventListener('hashchange', () => { if(S.user) { render(); scrollTo(0, 0); } });
@@ -944,6 +990,7 @@ async function boot(){
     }
   }catch(e){ toast('Không tải được dữ liệu: ' + e.message); }
   render();
+  if(S.user && S.member) welcome();
 }
 API?.onAuth(u => { if((u?.id || null) !== (S.user?.id || null)) boot(); });
 boot();
