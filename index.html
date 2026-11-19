@@ -70,6 +70,8 @@ h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
 .fb{background:#1877f2;box-shadow:0 4px 0 #0d5bc4;font-size:17px;padding:14px 24px}
 .fb:active{box-shadow:0 1px 0 #0d5bc4}
 .lock-note{font-size:13px;display:flex;align-items:center;gap:6px}
+.alt-login{border:0;background:none;padding:6px 10px;font-weight:600;font-size:14.5px;color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px}
+.code-input{letter-spacing:.4em;text-align:center;font-family:var(--display);font-size:26px!important}
 .book3d{position:relative;width:min(86vw,320px);height:250px;perspective:1100px;margin-top:6px}
 .book{position:absolute;left:50%;top:50%;width:280px;height:190px;margin:-95px 0 0 -140px;transform-style:preserve-3d;transform:rotateX(26deg) rotateZ(-5deg);animation:bookfloat 6s ease-in-out infinite}
 @keyframes bookfloat{50%{transform:rotateX(22deg) rotateZ(-3deg) translateY(-8px)}}
@@ -443,6 +445,9 @@ const Cloud = (() => {
     async user(){ const { data } = await sb.auth.getSession(); return data.session?.user || null; },
     onAuth(fn){ sb.auth.onAuthStateChange((_e, s) => fn(s?.user || null)); },
     signIn(){ return sb.auth.signInWithOAuth({ provider:'facebook', options:{ redirectTo: location.origin + location.pathname } }); },
+    // đăng nhập bằng mã gửi qua email (dành cho người không dùng được Facebook)
+    async sendCode(email){ const { error } = await sb.auth.signInWithOtp({ email, options:{ shouldCreateUser:true, emailRedirectTo: location.origin + location.pathname } }); if(error) throw error; },
+    async verifyCode(email, token){ const { data, error } = await sb.auth.verifyOtp({ email, token, type:'email' }); if(error) throw error; return data.user; },
     signOut(){ return sb.auth.signOut(); },
     async isMember(uid){ return ok(await sb.from('members').select('user_id,display_name').eq('user_id', uid).maybeSingle()); },
     async items(){ return ok(await sb.from('items').select('*').order('position').order('created_at')); },
@@ -691,6 +696,7 @@ function viewLogin(){
     <h1>Hai Đứa Mình</h1>
     <p class="muted">Một cuốn sổ nhỏ cho những lời hẹn, và những ngày mình đã cùng nhau.</p>
     <button class="btn fb" id="loginBtn" type="button">${ICON.fb} Đăng nhập bằng Facebook</button>
+    <button class="alt-login" id="emailLogin" type="button">Hoặc đăng nhập bằng mã gửi qua email</button>
     <span class="lock-note muted">${ICON.lock} Chỉ mở cho hai người.</span>
   </section>`;
 }
@@ -780,7 +786,7 @@ function route(){
 function render(){
   const app = $('#app'), r = route();
   $('#tabbar').hidden = !S.user || !S.member;
-  if(!S.user){ app.innerHTML = viewLogin(); $('#loginBtn').onclick = () => API.signIn().catch(e => toast('Chưa đăng nhập được: ' + e.message)); bindCarousel(app); bindTilt(app); return; }
+  if(!S.user){ app.innerHTML = viewLogin(); $('#loginBtn').onclick = () => API.signIn().catch(e => toast('Chưa đăng nhập được: ' + e.message)); $('#emailLogin').onclick = emailLogin; bindCarousel(app); bindTilt(app); return; }
   if(!S.member){ app.innerHTML = viewNotMember(); $('#logoutBtn').onclick = logout; return; }
   if(r.name === 'list' && r.q.get('f')) S.filter = r.q.get('f');
   const views = { home:viewHome, list:viewList, item:() => viewItem(r.id), memories:viewMemories, me:viewMe };
@@ -808,6 +814,39 @@ function bindView(app, r){
 async function refresh(){ await loadAll(); render(); }
 async function logout(){ await API.signOut(); S.user = null; S.member = false; location.hash = '#/'; render(); }
 
+function emailLogin(){
+  let email = '';
+  openSheet(`<h2>Đăng nhập bằng email</h2>
+    <div id="step1" style="display:grid;gap:12px">
+      <p class="muted" style="margin:0">Nhập email của bạn, trang sẽ gửi một mã đăng nhập vào hộp thư.</p>
+      <label class="field"><span>Email</span><input type="email" id="lgEmail" autocomplete="email" inputmode="email" placeholder="ten@gmail.com"></label>
+      <button class="btn block" id="lgSend" type="button">Gửi mã</button></div>
+    <div id="step2" style="display:none;gap:12px">
+      <p class="muted" style="margin:0" id="lgSent"></p>
+      <label class="field"><span>Mã đăng nhập</span><input type="text" id="lgCode" class="code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="••••••"></label>
+      <button class="btn block" id="lgVerify" type="button">Đăng nhập</button>
+      <button class="btn ghost block" id="lgBack" type="button">Đổi email hoặc gửi lại mã</button></div>
+    <button class="btn ghost block" data-close type="button">Huỷ</button>`, (sh, close) => {
+    const s1 = sh.querySelector('#step1'), s2 = sh.querySelector('#step2');
+    sh.querySelector('#lgSend').onclick = async e => {
+      email = sh.querySelector('#lgEmail').value.trim().toLowerCase();
+      if(!/^\S+@\S+\.\S+$/.test(email)){ toast('Email chưa đúng, kiểm tra lại nhé.'); return; }
+      e.target.disabled = true; e.target.textContent = 'Đang gửi…';
+      try{ await API.sendCode(email); s1.style.display = 'none'; s2.style.display = 'grid';
+        sh.querySelector('#lgSent').textContent = `Đã gửi mã tới ${email}. Mở hộp thư (cả mục Thư rác) và nhập mã vào đây.`; sh.querySelector('#lgCode').focus(); }
+      catch(err){ toast(/rate|limit|seconds/i.test(err.message) ? 'Vừa gửi mã rồi, đợi một chút rồi gửi lại nhé.' : /signup|not allowed/i.test(err.message) ? 'Email này không có quyền vào cuốn sổ.' : 'Chưa gửi được mã: ' + err.message); }
+      e.target.disabled = false; e.target.textContent = 'Gửi mã';
+    };
+    sh.querySelector('#lgBack').onclick = () => { s2.style.display = 'none'; s1.style.display = 'grid'; };
+    sh.querySelector('#lgVerify').onclick = async e => {
+      const code = sh.querySelector('#lgCode').value.replace(/\D/g, '');
+      if(code.length < 6){ toast('Mã có ít nhất 6 số.'); return; }
+      e.target.disabled = true;
+      try{ await API.verifyCode(email, code); close(); boot(); }
+      catch(err){ e.target.disabled = false; toast(/expired|invalid/i.test(err.message) ? 'Mã sai hoặc đã hết hạn. Thử lại hoặc gửi mã mới.' : 'Chưa đăng nhập được: ' + err.message); }
+    };
+  });
+}
 function markDone(it){
   openSheet(`<h2>Mình làm được rồi!</h2><p class="muted" style="margin:0">${esc(it.title)}</p>
     <label class="field"><span>Vào ngày</span><input type="date" id="doneDate" value="${today()}" max="${today()}"></label>
