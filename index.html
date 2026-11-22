@@ -512,7 +512,7 @@ async function loadAll(){
 function polaroid(m, opts = {}){
   const it = itemById(m?.item_id), th = theme(opts.theme || it?.theme);
   const src = m ? S.urls[opts.full ? m.photo_path : m.thumb_path] : '';
-  const cap = m ? (m.caption || it?.title || 'Một ngày của hai đứa') : (opts.label || 'Đang chờ một tấm ảnh');
+  const cap = m ? (opts.caption || m.caption || it?.title || 'Một ngày của hai đứa') : (opts.label || 'Đang chờ một tấm ảnh');
   return `<figure class="pola t-${th}${opts.mini ? ' mini' : ''}" style="--rot:${opts.rot ?? rot(m?.id || opts.label || th)}deg" ${m ? `data-mem="${m.id}"` : ''} ${opts.tilt === false ? '' : 'data-tilt'}>
     <span class="tape"></span>
     <div class="ph">${src ? `<img src="${esc(src)}" alt="${esc(cap)}" loading="lazy">` : `<div class="ph-empty">${THEMES[th].icon}<span>${m ? 'Đang tải ảnh…' : esc(opts.hint ?? 'Thêm ảnh')}</span></div>`}</div>
@@ -723,9 +723,11 @@ function viewNotMember(){
     <button class="btn ghost" id="logoutBtn" type="button">Đăng xuất</button></div></section>`;
 }
 function viewHome(){
-  const latest = S.memories.slice(0, 8);
-  const cards = latest.length >= 3 ? latest.map(m => polaroid(m, { mini:true, rot:0, tilt:false }))
-    : S.items.slice(0, 8).map(it => polaroid(null, { theme:it.theme, label:it.title, mini:true, rot:0, tilt:false, hint:'' }));
+  // Vòng 3D: mỗi điều trong checklist là một tấm; điều nào đã có ảnh thì hiện tấm ảnh đầu tiên của nó, xếp lên trước
+  const firstPhoto = id => memsOf(id).reduce((a, m) => !a || (m.taken_on + m.created_at) < (a.taken_on + a.created_at) ? m : a, null);
+  const ring = S.items.map(it => ({ it, m:firstPhoto(it.id) })).sort((a, b) => (b.m ? 1 : 0) - (a.m ? 1 : 0)).slice(0, 8);
+  const cards = ring.map(({ it, m }) => m ? polaroid(m, { mini:true, rot:0, tilt:false, theme:it.theme, caption:it.title })
+    : polaroid(null, { theme:it.theme, label:it.title, mini:true, rot:0, tilt:false, hint:'' }));
   const next = S.items.filter(i => !i.done_at).slice(0, 3);
   const doneRecent = S.items.filter(i => i.done_at).sort((a,b) => b.done_at.localeCompare(a.done_at)).slice(0, 3);
   return `${topbar()}
